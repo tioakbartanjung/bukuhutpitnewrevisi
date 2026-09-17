@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Hutang Piutang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1F2A24;
+    --ink-soft:#4A5750;
+    --paper:#F1ECDD;
+    --paper-raised:#FBF9F1;
+    --line:#CBBE99;
+    --line-soft:#DED3B2;
+    --in:#2F6E4F;
+    --in-soft:#E4EEE4;
+    --out:#A6402F;
+    --out-soft:#F3E3DE;
+    --gold:#A97C2A;
+    --gold-dark:#8A6620;
+    --danger:#A6402F;
+    --shadow: 0 1px 0 rgba(31,42,36,0.06);
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --ink:#EDE7D6;
+      --ink-soft:#B9AF98;
+      --paper:#211D16;
+      --paper-raised:#2A2419;
+      --line:#4A4130;
+      --line-soft:#3A3324;
+      --in:#7FC79A;
+      --in-soft:#25332A;
+      --out:#E08974;
+      --out-soft:#3A2620;
+      --gold:#D9AE5C;
+      --gold-dark:#E9C377;
+      --shadow: 0 1px 0 rgba(0,0,0,0.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDE7D6;
+    --ink-soft:#B9AF98;
+    --paper:#211D16;
+    --paper-raised:#2A2419;
+    --line:#4A4130;
+    --line-soft:#3A3324;
+    --in:#7FC79A;
+    --in-soft:#25332A;
+    --out:#E08974;
+    --out-soft:#3A2620;
+    --gold:#D9AE5C;
+    --gold-dark:#E9C377;
+    --shadow: 0 1px 0 rgba(0,0,0,0.3);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Lora', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:0 20px 80px;
+  }
+
+  /* ---------- Header + nav ---------- */
+  header{
+    padding:28px 0 0;
+  }
+  .header-atas{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .judul-grup{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .maskot-naga{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+  }
+  h1{
+    font-size:1.9rem;
+    font-weight:700;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+  header .tanggal-hari-ini{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    color:var(--ink-soft);
+  }
+  nav.menu-halaman{
+    display:flex;
+    gap:4px;
+    border-bottom:2px solid var(--ink);
+    flex-wrap:wrap;
+  }
+  nav.menu-halaman a{
+    display:inline-block;
+    padding:10px 18px;
+    font-family:'Lora',serif;
+    font-size:0.88rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border:1px solid transparent;
+    border-bottom:none;
+    border-radius:4px 4px 0 0;
+    position:relative;
+    top:2px;
+  }
+  nav.menu-halaman a.aktif{
+    color:var(--ink);
+    background:var(--paper-raised);
+    border-color:var(--line);
+    border-bottom:2px solid var(--paper-raised);
+  }
+
+  main{ padding-top:28px; }
+  .halaman{ display:none; }
+  .halaman.aktif{ display:block; }
+
+  /* ---------- Section heading ---------- */
+  .judul-seksi{
+    font-size:0.95rem;
+    font-weight:700;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .judul-seksi .angka-seksi{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.75rem;
+    color:var(--gold-dark);
+    border:1px solid var(--line);
+    border-radius:50%;
+    width:20px;
+    height:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .subjudul{
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin:-8px 0 20px;
+  }
+
+  section{ margin-bottom:32px; }
+
+  /* ---------- Summary strip ---------- */
+  .ringkasan{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    background:var(--paper-raised);
+  }
+  .ringkasan .item{
+    padding:14px 18px;
+    border-right:1px solid var(--line-soft);
+  }
+  .ringkasan .item:last-child{border-right:none;}
+  .ringkasan .label{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    font-family:'Lora',serif;
+    font-style:italic;
+  }
+  .ringkasan .nilai{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:1.1rem;
+    font-weight:600;
+  }
+  .ringkasan .masuk .nilai{color:var(--in);}
+  .ringkasan .keluar .nilai{color:var(--out);}
+
+  /* ---------- Panels (nasabah + entri) ---------- */
+  .panel{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:18px;
+  }
+
+  .baris-form{
+    display:grid;
+    gap:12px;
+    align-items:end;
+  }
+  .baris-form.nasabah-baris{ grid-template-columns: 1.3fr 1fr 1fr auto; }
+  .baris-form.entri-baris{ grid-template-columns: 1fr 1.2fr 1.6fr 1fr 1fr auto; }
+  @media (max-width: 820px){
+    .baris-form.nasabah-baris{ grid-template-columns: 1fr 1fr; }
+    .baris-form.nasabah-baris .tombol{ grid-column: 1 / -1; }
+    .baris-form.entri-baris{ grid-template-columns: 1fr 1fr; }
+    .baris-form.entri-baris .referensi,
+    .baris-form.entri-baris .tombol{ grid-column: 1 / -1; }
+  }
+
+  .field label{
+    display:block;
+    font-size:0.7rem;
+    color:var(--ink-soft);
+    margin-bottom:5px;
+    font-style:italic;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.86rem;
+  }
+  .field input[type="text"], .field select{ font-family:'Lora', serif; font-size:0.9rem; }
+  .field input:focus, .field select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+
+  .jenis-toggle{
+    display:flex;
+    border:1px solid var(--line);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .jenis-toggle button{
+    flex:1;
+    padding:9px 8px;
+    border:none;
+    background:var(--paper);
+    color:var(--ink-soft);
+    font-family:'Lora',serif;
+    font-size:0.82rem;
+    cursor:pointer;
+  }
+  .jenis-toggle button.aktif-masuk{ background:var(--in-soft); color:var(--in); font-weight:600; }
+  .jenis-toggle button.aktif-keluar{ background:var(--out-soft); color:var(--out); font-weight:600; }
+
+  button.tombol-utama{
+    padding:10px 20px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    border-radius:3px;
+    font-family:'Lora',serif;
+    font-size:0.88rem;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  button.tombol-utama:hover{ background:var(--gold-dark); }
+  button.tombol-utama:disabled{ opacity:0.5; cursor:not-allowed; }
+
+  a.tautan-tombol{
+    display:inline-block;
+    padding:10px 20px;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:3px;
+    font-family:'Lora',serif;
+    font-size:0.88rem;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  a.tautan-tombol:hover{ background:var(--gold-dark); }
+
+  .pesan-error{
+    color:var(--danger);
+    font-size:0.78rem;
+    margin-top:10px;
+    font-style:italic;
+  }
+  .pesan-hint{
+    color:var(--ink-soft);
+    font-size:0.78rem;
+    margin-top:10px;
+    font-style:italic;
+  }
+
+  /* ---------- daftar nasabah ---------- */
+  .daftar-nasabah{ margin-top:16px; }
+  .kartu-nasabah{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding:12px 4px;
+    border-bottom:1px solid var(--line-soft);
+    font-size:0.9rem;
+  }
+  .kartu-nasabah:last-child{ border-bottom:none; }
+  .kartu-nasabah .info-nasabah{ display:flex; flex-direction:column; gap:2px; }
+  .kartu-nasabah .nama{ font-weight:600; }
+  .kartu-nasabah .rekening{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- Filter ---------- */
+  .filter-baris{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:14px;
+    flex-wrap:wrap;
+  }
+  .filter-grup{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .filter-baris label{
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+  .filter-baris select{
+    padding:7px 10px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:var(--paper-raised);
+    color:var(--ink);
+    font-family:'Lora',serif;
+    font-size:0.86rem;
+  }
+  .lencana-hanya-lihat{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:0.72rem;
+    font-style:italic;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:4px 12px;
+    background:var(--paper-raised);
+  }
+
+  /* ---------- Table ---------- */
+  .tabel-scroll{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:var(--paper-raised);
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:760px;
+  }
+  thead th{
+    text-align:left;
+    font-size:0.72rem;
+    font-style:italic;
+    font-weight:600;
+    color:var(--ink-soft);
+    padding:12px 14px;
+    border-bottom:2px solid var(--ink);
+  }
+  thead th.angka{ text-align:right; }
+  tbody td{
+    padding:11px 14px;
+    border-bottom:1px solid var(--line-soft);
+    font-size:0.88rem;
+    vertical-align:top;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody td.tanggal{ font-family:'IBM Plex Mono', monospace; font-size:0.8rem; white-space:nowrap; }
+  tbody td.nasabah{ font-weight:600; white-space:nowrap; }
+  tbody td.jenis-label{ white-space:nowrap; font-size:0.8rem; color:var(--ink-soft); font-style:italic; }
+  tbody td.angka{ text-align:right; font-family:'IBM Plex Mono', monospace; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  tbody td.debet{ color:var(--in); }
+  tbody td.kredit{ color:var(--out); }
+  tbody td.saldo{ font-weight:600; }
+  tbody td.hapus{ text-align:center; width:36px; }
+  .btn-hapus{
+    border:none;
+    background:none;
+    color:var(--ink-soft);
+    cursor:pointer;
+    font-size:0.95rem;
+    padding:2px 6px;
+    border-radius:3px;
+  }
+  .btn-hapus:hover{ color:var(--danger); background:var(--out-soft); }
+
+  .kosong{
+    padding:44px 20px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  footer.catatan{
+    margin-top:18px;
+    font-size:0.76rem;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="banderolKonfigurasi" style="display:none; background:var(--out-soft); color:var(--out); border:1px solid var(--out); border-radius:4px; padding:12px 16px; margin:20px 0 0; font-size:0.85rem;">
+    <strong>Belum terhubung ke Supabase.</strong> Buka file HTML ini, cari <code>SUPABASE_URL</code> dan <code>SUPABASE_ANON_KEY</code> di bagian bawah, lalu isi dengan kredensial project Supabase Anda.
+  </div>
+
+  <header>
+    <div class="header-atas">
+      <div class="judul-grup">
+        <svg class="maskot-naga" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Maskot naga">
+          <path d="M10,40 Q7,20 27,13 Q34,8 41,13 Q56,17 56,34 Q56,47 45,51 Q34,55 23,51 Q11,49 10,40 Z" fill="var(--in)"/>
+          <path d="M22,13 L17,3 L27,11 Z" fill="var(--gold)"/>
+          <path d="M35,11 L36,1 L42,9 Z" fill="var(--gold)"/>
+          <path d="M15,25 L19,19 L23,25 L27,17 L31,25 L35,19 L39,25" stroke="var(--gold)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <ellipse cx="47" cy="39" rx="11" ry="7.5" fill="var(--in)"/>
+          <circle cx="54" cy="37" r="1.5" fill="var(--ink)"/>
+          <circle cx="51" cy="41" r="1.2" fill="var(--ink)"/>
+          <path d="M25,19 Q31,15 37,19" stroke="var(--ink)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <circle cx="31" cy="27" r="4.2" fill="var(--paper)"/>
+          <circle cx="32" cy="27" r="2.3" fill="var(--ink)"/>
+          <path d="M41,45 Q47,50 54,43" stroke="var(--ink)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <path d="M45,45 L46,50 L48,45 Z" fill="var(--paper)"/>
+          <path d="M13,44 Q4,46 5,54" stroke="var(--in)" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M4,52 L1,56 L7,55 Z" fill="var(--gold)"/>
+        </svg>
+        <h1>Buku Hutang Piutang</h1>
+      </div>
+      <div class="tanggal-hari-ini" id="tanggalHariIni"></div>
+    </div>
+    <nav class="menu-halaman">
+      <a href="#ringkasan" data-halaman="ringkasan">Buku Besar</a>
+      <a href="#transaksi" data-halaman="transaksi">Transaksi</a>
+      <a href="#transaksi-khusus" data-halaman="transaksi-khusus">Transaksi Khusus</a>
+      <a href="#nasabah" data-halaman="nasabah">Data Nasabah</a>
+    </nav>
+  </header>
+
+  <main>
+
+  <!-- ================= HALAMAN: BUKU BESAR (LIHAT SAJA) ================= -->
+  <div class="halaman" id="halaman-ringkasan">
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">1</span> Buku Besar <span class="lencana-hanya-lihat">Hanya lihat</span></p>
+      <p class="subjudul">Pilih nasabah dan jenis transaksi untuk melihat catatannya. Untuk menambah atau menghapus transaksi, gunakan halaman Transaksi atau Transaksi Khusus.</p>
+
+      <div class="filter-baris">
+        <div class="filter-grup">
+          <label for="selectNasabahLihat">Nasabah</label>
+          <select id="selectNasabahLihat">
+            <option value="semua">Semua nasabah</option>
+          </select>
+        </div>
+        <div class="filter-grup">
+          <label for="selectJenisLihat">Jenis Transaksi</label>
+          <select id="selectJenisLihat">
+            <option value="semua">Semua jenis</option>
+            <option value="transaksi">Transaksi</option>
+            <option value="khusus">Transaksi Khusus</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="tabel-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Nasabah</th>
+              <th>Jenis</th>
+              <th>Referensi</th>
+              <th class="angka">Debet</th>
+              <th class="angka">Kredit</th>
+              <th class="angka">Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyLihat"></tbody>
+        </table>
+        <div class="kosong" id="pesanKosongLihat">Belum ada catatan untuk pilihan ini.</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= HALAMAN: TRANSAKSI ================= -->
+  <div class="halaman" id="halaman-transaksi">
+
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">1</span> Catat Transaksi</p>
+      <div class="panel">
+        <form id="formEntri">
+          <div class="baris-form entri-baris">
+            <div class="field">
+              <label for="inputTanggal">Tanggal</label>
+              <input type="date" id="inputTanggal" required>
+            </div>
+            <div class="field">
+              <label for="selectNasabah">Nasabah</label>
+              <select id="selectNasabah" required></select>
+            </div>
+            <div class="field referensi">
+              <label for="inputReferensi">Referensi</label>
+              <input type="text" id="inputReferensi" placeholder="mis. Pinjaman modal, Cicilan bulan 1" required>
+            </div>
+            <div class="field">
+              <label for="inputJumlah">Jumlah</label>
+              <input type="number" id="inputJumlah" placeholder="0" min="0" step="1" required>
+            </div>
+            <div class="field">
+              <label>Jenis</label>
+              <div class="jenis-toggle" id="jenisToggle">
+                <button type="button" id="btnMasuk" class="aktif-masuk">Debet</button>
+                <button type="button" id="btnKeluar">Kredit</button>
+              </div>
+            </div>
+            <div class="field tombol">
+              <button type="submit" class="tombol-utama" id="btnCatat">Catat</button>
+            </div>
+          </div>
+          <div class="pesan-error" id="pesanError" style="display:none;"></div>
+          <div class="pesan-hint" id="pesanHint" style="display:none;">
+            Belum ada nasabah terdaftar. <a href="#nasabah" style="color:inherit;">Tambahkan nasabah dulu</a> di halaman Data Nasabah.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">2</span> Buku Besar</p>
+      <div class="filter-baris">
+        <div class="filter-grup">
+          <label for="filterNasabah">Tampilkan untuk</label>
+          <select id="filterNasabah">
+            <option value="semua">Semua nasabah</option>
+          </select>
+        </div>
+      </div>
+      <div class="tabel-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Nasabah</th>
+              <th>Referensi</th>
+              <th class="angka">Debet</th>
+              <th class="angka">Kredit</th>
+              <th class="angka">Saldo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyEntri"></tbody>
+        </table>
+        <div class="kosong" id="pesanKosong">Belum ada catatan. Tambahkan transaksi di atas.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================= HALAMAN: TRANSAKSI KHUSUS ================= -->
+  <div class="halaman" id="halaman-transaksi-khusus">
+
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">1</span> Catat Transaksi Khusus</p>
+      <div class="panel">
+        <form id="formEntriKhusus">
+          <div class="baris-form entri-baris">
+            <div class="field">
+              <label for="inputTanggalKhusus">Tanggal</label>
+              <input type="date" id="inputTanggalKhusus" required>
+            </div>
+            <div class="field">
+              <label for="selectNasabahKhusus">Nasabah</label>
+              <select id="selectNasabahKhusus" required></select>
+            </div>
+            <div class="field referensi">
+              <label for="inputReferensiKhusus">Referensi</label>
+              <input type="text" id="inputReferensiKhusus" placeholder="mis. Pinjaman modal, Cicilan bulan 1" required>
+            </div>
+            <div class="field">
+              <label for="inputJumlahKhusus">Jumlah</label>
+              <input type="number" id="inputJumlahKhusus" placeholder="0" min="0" step="1" required>
+            </div>
+            <div class="field">
+              <label>Jenis</label>
+              <div class="jenis-toggle" id="jenisToggleKhusus">
+                <button type="button" id="btnMasukKhusus" class="aktif-masuk">Debet</button>
+                <button type="button" id="btnKeluarKhusus">Kredit</button>
+              </div>
+            </div>
+            <div class="field tombol">
+              <button type="submit" class="tombol-utama" id="btnCatatKhusus">Catat</button>
+            </div>
+          </div>
+          <div class="pesan-error" id="pesanErrorKhusus" style="display:none;"></div>
+          <div class="pesan-hint" id="pesanHintKhusus" style="display:none;">
+            Belum ada nasabah terdaftar. <a href="#nasabah" style="color:inherit;">Tambahkan nasabah dulu</a> di halaman Data Nasabah.
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">2</span> Buku Besar Khusus</p>
+      <div class="filter-baris">
+        <div class="filter-grup">
+          <label for="filterNasabahKhusus">Tampilkan untuk</label>
+          <select id="filterNasabahKhusus">
+            <option value="semua">Semua nasabah</option>
+          </select>
+        </div>
+      </div>
+      <div class="tabel-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Nasabah</th>
+              <th>Referensi</th>
+              <th class="angka">Debet</th>
+              <th class="angka">Kredit</th>
+              <th class="angka">Saldo</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyEntriKhusus"></tbody>
+        </table>
+        <div class="kosong" id="pesanKosongKhusus">Belum ada catatan. Tambahkan transaksi di atas.</div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================= HALAMAN: DATA NASABAH ================= -->
+  <div class="halaman" id="halaman-nasabah">
+
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">1</span> Tambah Nasabah</p>
+      <p class="subjudul">Daftarkan nasabah di sini sebelum mencatat transaksi di halaman Transaksi.</p>
+      <div class="panel">
+        <form id="formNasabah">
+          <div class="baris-form nasabah-baris">
+            <div class="field">
+              <label for="inputNamaNasabah">Nama Nasabah</label>
+              <input type="text" id="inputNamaNasabah" placeholder="mis. Budi Santoso" required>
+            </div>
+            <div class="field">
+              <label for="inputNamaBank">Nama Bank</label>
+              <input type="text" id="inputNamaBank" placeholder="mis. BCA" required>
+            </div>
+            <div class="field">
+              <label for="inputNoRekening">No. Rekening</label>
+              <input type="text" id="inputNoRekening" placeholder="mis. 1234567890" required inputmode="numeric">
+            </div>
+            <div class="field tombol">
+              <button type="submit" class="tombol-utama">Tambah Nasabah</button>
+            </div>
+          </div>
+          <div class="pesan-error" id="pesanErrorNasabah" style="display:none;"></div>
+        </form>
+      </div>
+    </section>
+
+    <section>
+      <p class="judul-seksi"><span class="angka-seksi">2</span> Daftar Nasabah</p>
+      <div class="panel">
+        <div class="daftar-nasabah" id="daftarNasabah"></div>
+      </div>
+    </section>
+
+    <section style="margin-bottom:0;">
+      <a href="#transaksi" class="tautan-tombol">Ke Halaman Transaksi →</a>
+    </section>
+
+  </div>
+
+  </main>
+
+  <footer class="catatan">Data tersimpan di peramban ini saja. Membuka halaman ini di perangkat lain tidak akan menampilkan data yang sama.</footer>
+
+</div>
+
+<script>
+(function(){
+  /* ============================================================
+     KONFIGURASI SUPABASE — ganti dua nilai di bawah ini
+     Dapatkan dari: Dashboard Supabase > Project Settings > API
+     ============================================================ */
+  var SUPABASE_URL = 'https://ovlwnyjzkasnopkyrzmj.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im92bHdueWp6a2Fzbm9wa3lyem1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MzkyMzksImV4cCI6MjEwNTIxNTIzOX0.KDTNVmv2tgfoWG7cAxpOeEqqUiX7PzEpyb_f0bqXRkQ';
+
+  var supa = null;
+  var terkonfigurasi = SUPABASE_URL.indexOf('GANTI_DENGAN') === -1 && SUPABASE_ANON_KEY.indexOf('GANTI_DENGAN') === -1;
+  if(terkonfigurasi){
+    supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }else{
+    document.getElementById('banderolKonfigurasi').style.display = 'block';
+  }
+
+  function formatRupiah(angka){
+    var n = Math.round(Number(angka) || 0);
+    var neg = n < 0;
+    n = Math.abs(n);
+    var s = n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return (neg ? '-Rp ' : 'Rp ') + s;
+  }
+  function formatTanggalTampil(iso){
+    if(!iso) return '';
+    var parts = iso.split('-');
+    if(parts.length !== 3) return iso;
+    var bulanNama = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+    var y = parts[0], m = parseInt(parts[1],10)-1, d = parseInt(parts[2],10);
+    return d + ' ' + bulanNama[m] + ' ' + y;
+  }
+
+  /* ---------- ROUTING (halaman) ---------- */
+  var HALAMAN_VALID = ['ringkasan','transaksi','transaksi-khusus','nasabah'];
+
+  function halamanDariHash(){
+    var h = (window.location.hash || '').replace('#','');
+    return HALAMAN_VALID.indexOf(h) !== -1 ? h : 'ringkasan';
+  }
+
+  function tampilkanHalaman(){
+    var target = halamanDariHash();
+    HALAMAN_VALID.forEach(function(h){
+      document.getElementById('halaman-' + h).classList.toggle('aktif', h === target);
+    });
+    document.querySelectorAll('nav.menu-halaman a').forEach(function(a){
+      a.classList.toggle('aktif', a.getAttribute('data-halaman') === target);
+    });
+    if(target === 'ringkasan'){ renderLihatBukuBesar(); }
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange', tampilkanHalaman);
+
+  /* ---------- NASABAH ---------- */
+  async function getNasabahList(){
+    if(!supa) return [];
+    var res = await supa.from('nasabah').select('*').order('nama', { ascending: true });
+    if(res.error){ console.error('Gagal mengambil nasabah', res.error); return []; }
+    return res.data || [];
+  }
+
+  function namaNasabahById(list, id){
+    var n = list.find(function(n){ return String(n.id) === String(id); });
+    return n ? n.nama : '(nasabah dihapus)';
+  }
+
+  async function renderNasabah(){
+    var list = await getNasabahList();
+    var wrap = document.getElementById('daftarNasabah');
+    wrap.innerHTML = '';
+    if(list.length === 0){
+      var kosong = document.createElement('div');
+      kosong.className = 'pesan-hint';
+      kosong.style.display = 'block';
+      kosong.textContent = 'Belum ada nasabah terdaftar.';
+      wrap.appendChild(kosong);
+    }else{
+      list.forEach(function(n){
+        var kartu = document.createElement('div');
+        kartu.className = 'kartu-nasabah';
+
+        var info = document.createElement('div');
+        info.className = 'info-nasabah';
+        var nama = document.createElement('span');
+        nama.className = 'nama';
+        nama.textContent = n.nama;
+        var rek = document.createElement('span');
+        rek.className = 'rekening';
+        rek.textContent = n.bank + ' — ' + n.rekening;
+        info.appendChild(nama);
+        info.appendChild(rek);
+
+        var btnHapus = document.createElement('button');
+        btnHapus.className = 'btn-hapus';
+        btnHapus.textContent = '✕';
+        btnHapus.setAttribute('aria-label', 'Hapus nasabah ' + n.nama);
+        btnHapus.addEventListener('click', function(){ hapusNasabah(n.id); });
+
+        kartu.appendChild(info);
+        kartu.appendChild(btnHapus);
+        wrap.appendChild(kartu);
+      });
+    }
+    return list;
+  }
+
+  async function hapusNasabah(id){
+    if(!supa) return;
+    await supa.from('nasabah').delete().eq('id', id);
+    await refreshSemuaTampilan();
+  }
+
+  function tampilkanErrorNasabah(pesan){
+    var el = document.getElementById('pesanErrorNasabah');
+    if(!pesan){ el.style.display = 'none'; el.textContent=''; return; }
+    el.textContent = pesan;
+    el.style.display = 'block';
+  }
+
+  document.getElementById('formNasabah').addEventListener('submit', async function(e){
+    e.preventDefault();
+    tampilkanErrorNasabah(null);
+
+    if(!supa){ tampilkanErrorNasabah('Belum terhubung ke Supabase. Lengkapi konfigurasi terlebih dahulu.'); return; }
+
+    var nama = document.getElementById('inputNamaNasabah').value.trim();
+    var bank = document.getElementById('inputNamaBank').value.trim();
+    var rekening = document.getElementById('inputNoRekening').value.trim();
+
+    if(!nama){ tampilkanErrorNasabah('Nama nasabah wajib diisi.'); return; }
+    if(!bank){ tampilkanErrorNasabah('Nama bank wajib diisi.'); return; }
+    if(!rekening){ tampilkanErrorNasabah('Nomor rekening wajib diisi.'); return; }
+
+    var res = await supa.from('nasabah').insert({ nama: nama, bank: bank, rekening: rekening });
+    if(res.error){ tampilkanErrorNasabah('Gagal menyimpan: ' + res.error.message); return; }
+
+    document.getElementById('inputNamaNasabah').value = '';
+    document.getElementById('inputNamaBank').value = '';
+    document.getElementById('inputNoRekening').value = '';
+    document.getElementById('inputNamaNasabah').focus();
+
+    await refreshSemuaTampilan();
+  });
+
+  /* ---------- MODUL TRANSAKSI (dipakai untuk Transaksi & Transaksi Khusus) ---------- */
+  function buatModulTransaksi(cfg){
+    var jenisAktif = 'debet';
+
+    async function isiSelectNasabah(daftarNasabah){
+      var select = document.getElementById(cfg.idSelectNasabah);
+      var nilaiSebelumnya = select.value;
+      select.innerHTML = '';
+      daftarNasabah.forEach(function(n){
+        var opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = n.nama;
+        select.appendChild(opt);
+      });
+      if(daftarNasabah.some(function(n){ return String(n.id) === nilaiSebelumnya; })){
+        select.value = nilaiSebelumnya;
+      }
+    }
+
+    async function isiFilterNasabah(daftarNasabah){
+      var select = document.getElementById(cfg.idFilterNasabah);
+      var nilaiSebelumnya = select.value;
+      select.innerHTML = '<option value="semua">Semua nasabah</option>';
+      daftarNasabah.forEach(function(n){
+        var opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = n.nama;
+        select.appendChild(opt);
+      });
+      if(nilaiSebelumnya === 'semua' || daftarNasabah.some(function(n){ return String(n.id) === nilaiSebelumnya; })){
+        select.value = nilaiSebelumnya;
+      }
+    }
+
+    function perbaruiStatusForm(adaNasabah){
+      document.getElementById(cfg.idBtnCatat).disabled = !adaNasabah;
+      document.getElementById(cfg.idSelectNasabah).disabled = !adaNasabah;
+      document.getElementById(cfg.idPesanHint).style.display = adaNasabah ? 'none' : 'block';
+    }
+
+    function tampilkanError(pesan){
+      var el = document.getElementById(cfg.idPesanError);
+      if(!pesan){ el.style.display = 'none'; el.textContent=''; return; }
+      el.textContent = pesan;
+      el.style.display = 'block';
+    }
+
+    async function hapusEntri(id){
+      if(!supa) return;
+      await supa.from('transaksi').delete().eq('id', id);
+      await render();
+    }
+
+    async function render(){
+      var daftarNasabah = await getNasabahList();
+      await isiSelectNasabah(daftarNasabah);
+      await isiFilterNasabah(daftarNasabah);
+      perbaruiStatusForm(daftarNasabah.length > 0);
+
+      var tbody = document.getElementById(cfg.idTbody);
+      var pesanKosong = document.getElementById(cfg.idPesanKosong);
+
+      if(!supa){ tbody.innerHTML = ''; pesanKosong.style.display = 'block'; return; }
+
+      var filterId = document.getElementById(cfg.idFilterNasabah).value;
+
+      var query = supa.from('transaksi').select('*')
+        .eq('jenis_transaksi', cfg.jenisTransaksi)
+        .order('tanggal', { ascending: true })
+        .order('id', { ascending: true });
+      if(filterId !== 'semua'){ query = query.eq('nasabah_id', filterId); }
+
+      var res = await query;
+      var data = res.error ? [] : (res.data || []);
+
+      tbody.innerHTML = '';
+      pesanKosong.style.display = data.length === 0 ? 'block' : 'none';
+
+      var saldo = 0;
+      data.forEach(function(entri){
+        var debet = entri.jenis === 'debet' ? Number(entri.jumlah) : 0;
+        var kredit = entri.jenis === 'kredit' ? Number(entri.jumlah) : 0;
+        saldo += debet - kredit;
+
+        var tr = document.createElement('tr');
+
+        var tdTanggal = document.createElement('td');
+        tdTanggal.className = 'tanggal';
+        tdTanggal.textContent = formatTanggalTampil(entri.tanggal);
+        tr.appendChild(tdTanggal);
+
+        var tdNasabah = document.createElement('td');
+        tdNasabah.className = 'nasabah';
+        tdNasabah.textContent = namaNasabahById(daftarNasabah, entri.nasabah_id);
+        tr.appendChild(tdNasabah);
+
+        var tdRef = document.createElement('td');
+        tdRef.textContent = entri.referensi;
+        tr.appendChild(tdRef);
+
+        var tdDebet = document.createElement('td');
+        tdDebet.className = 'angka debet';
+        tdDebet.textContent = debet ? formatRupiah(debet) : '—';
+        tr.appendChild(tdDebet);
+
+        var tdKredit = document.createElement('td');
+        tdKredit.className = 'angka kredit';
+        tdKredit.textContent = kredit ? formatRupiah(kredit) : '—';
+        tr.appendChild(tdKredit);
+
+        var tdSaldo = document.createElement('td');
+        tdSaldo.className = 'angka saldo';
+        tdSaldo.textContent = formatRupiah(saldo);
+        tr.appendChild(tdSaldo);
+
+        var tdHapus = document.createElement('td');
+        tdHapus.className = 'hapus';
+        var btnHapus = document.createElement('button');
+        btnHapus.className = 'btn-hapus';
+        btnHapus.setAttribute('aria-label', 'Hapus catatan ' + entri.referensi);
+        btnHapus.textContent = '✕';
+        btnHapus.addEventListener('click', function(){ hapusEntri(entri.id); });
+        tdHapus.appendChild(btnHapus);
+        tr.appendChild(tdHapus);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function setJenis(jenis){
+      jenisAktif = jenis;
+      document.getElementById(cfg.idBtnMasuk).classList.toggle('aktif-masuk', jenis === 'debet');
+      document.getElementById(cfg.idBtnKeluar).classList.toggle('aktif-keluar', jenis === 'kredit');
+    }
+    document.getElementById(cfg.idBtnMasuk).addEventListener('click', function(){ setJenis('debet'); });
+    document.getElementById(cfg.idBtnKeluar).addEventListener('click', function(){ setJenis('kredit'); });
+
+    document.getElementById(cfg.idForm).addEventListener('submit', async function(e){
+      e.preventDefault();
+      tampilkanError(null);
+
+      if(!supa){ tampilkanError('Belum terhubung ke Supabase. Lengkapi konfigurasi terlebih dahulu.'); return; }
+
+      var daftarNasabah = await getNasabahList();
+      if(daftarNasabah.length === 0){
+        tampilkanError('Tambahkan nasabah terlebih dahulu di halaman Data Nasabah.');
+        return;
+      }
+
+      var tanggal = document.getElementById(cfg.idInputTanggal).value;
+      var nasabahId = document.getElementById(cfg.idSelectNasabah).value;
+      var referensi = document.getElementById(cfg.idInputReferensi).value.trim();
+      var jumlah = parseFloat(document.getElementById(cfg.idInputJumlah).value);
+
+      if(!tanggal){ tampilkanError('Tanggal wajib diisi.'); return; }
+      if(!nasabahId){ tampilkanError('Pilih nasabah terlebih dahulu.'); return; }
+      if(!referensi){ tampilkanError('Referensi wajib diisi.'); return; }
+      if(!jumlah || jumlah <= 0 || isNaN(jumlah)){ tampilkanError('Jumlah harus lebih besar dari nol.'); return; }
+
+      var res = await supa.from('transaksi').insert({
+        tanggal: tanggal,
+        nasabah_id: nasabahId,
+        referensi: referensi,
+        jenis: jenisAktif,
+        jenis_transaksi: cfg.jenisTransaksi,
+        jumlah: jumlah
+      });
+      if(res.error){ tampilkanError('Gagal menyimpan: ' + res.error.message); return; }
+
+      document.getElementById(cfg.idInputReferensi).value = '';
+      document.getElementById(cfg.idInputJumlah).value = '';
+      document.getElementById(cfg.idInputReferensi).focus();
+
+      await render();
+    });
+
+    document.getElementById(cfg.idFilterNasabah).addEventListener('change', render);
+
+    (function(){
+      var now = new Date();
+      var yyyy = now.getFullYear();
+      var mm = String(now.getMonth()+1).padStart(2,'0');
+      var dd = String(now.getDate()).padStart(2,'0');
+      document.getElementById(cfg.idInputTanggal).value = yyyy + '-' + mm + '-' + dd;
+    })();
+
+    return { render: render };
+  }
+
+  var modulTransaksi = buatModulTransaksi({
+    jenisTransaksi: 'reguler',
+    idForm: 'formEntri',
+    idInputTanggal: 'inputTanggal',
+    idSelectNasabah: 'selectNasabah',
+    idInputReferensi: 'inputReferensi',
+    idInputJumlah: 'inputJumlah',
+    idBtnMasuk: 'btnMasuk',
+    idBtnKeluar: 'btnKeluar',
+    idBtnCatat: 'btnCatat',
+    idPesanError: 'pesanError',
+    idPesanHint: 'pesanHint',
+    idFilterNasabah: 'filterNasabah',
+    idTbody: 'tbodyEntri',
+    idPesanKosong: 'pesanKosong'
+  });
+
+  var modulTransaksiKhusus = buatModulTransaksi({
+    jenisTransaksi: 'khusus',
+    idForm: 'formEntriKhusus',
+    idInputTanggal: 'inputTanggalKhusus',
+    idSelectNasabah: 'selectNasabahKhusus',
+    idInputReferensi: 'inputReferensiKhusus',
+    idInputJumlah: 'inputJumlahKhusus',
+    idBtnMasuk: 'btnMasukKhusus',
+    idBtnKeluar: 'btnKeluarKhusus',
+    idBtnCatat: 'btnCatatKhusus',
+    idPesanError: 'pesanErrorKhusus',
+    idPesanHint: 'pesanHintKhusus',
+    idFilterNasabah: 'filterNasabahKhusus',
+    idTbody: 'tbodyEntriKhusus',
+    idPesanKosong: 'pesanKosongKhusus'
+  });
+
+  /* ---------- HALAMAN BUKU BESAR (LIHAT SAJA, GABUNGAN) ---------- */
+  async function isiSelectNasabahLihat(daftarNasabah){
+    var select = document.getElementById('selectNasabahLihat');
+    var nilaiSebelumnya = select.value;
+    select.innerHTML = '<option value="semua">Semua nasabah</option>';
+    daftarNasabah.forEach(function(n){
+      var opt = document.createElement('option');
+      opt.value = n.id;
+      opt.textContent = n.nama;
+      select.appendChild(opt);
+    });
+    if(daftarNasabah.some(function(n){ return String(n.id) === nilaiSebelumnya; }) || nilaiSebelumnya === 'semua'){
+      select.value = nilaiSebelumnya;
+    }
+  }
+
+  async function renderLihatBukuBesar(){
+    var daftarNasabah = await getNasabahList();
+    await isiSelectNasabahLihat(daftarNasabah);
+
+    var tbody = document.getElementById('tbodyLihat');
+    var pesanKosong = document.getElementById('pesanKosongLihat');
+
+    if(!supa){ tbody.innerHTML = ''; pesanKosong.style.display = 'block'; return; }
+
+    var nasabahId = document.getElementById('selectNasabahLihat').value;
+    var jenisTransaksi = document.getElementById('selectJenisLihat').value;
+
+    var query = supa.from('transaksi').select('*').order('tanggal', { ascending: true }).order('id', { ascending: true });
+    if(jenisTransaksi !== 'semua'){
+      query = query.eq('jenis_transaksi', jenisTransaksi === 'transaksi' ? 'reguler' : 'khusus');
+    }
+    if(nasabahId !== 'semua'){ query = query.eq('nasabah_id', nasabahId); }
+
+    var res = await query;
+    var data = res.error ? [] : (res.data || []);
+
+    tbody.innerHTML = '';
+    pesanKosong.style.display = data.length === 0 ? 'block' : 'none';
+
+    var saldo = 0;
+    data.forEach(function(entri){
+      var debet = entri.jenis === 'debet' ? Number(entri.jumlah) : 0;
+      var kredit = entri.jenis === 'kredit' ? Number(entri.jumlah) : 0;
+      saldo += debet - kredit;
+
+      var tr = document.createElement('tr');
+
+      var tdTanggal = document.createElement('td');
+      tdTanggal.className = 'tanggal';
+      tdTanggal.textContent = formatTanggalTampil(entri.tanggal);
+      tr.appendChild(tdTanggal);
+
+      var tdNasabah = document.createElement('td');
+      tdNasabah.className = 'nasabah';
+      tdNasabah.textContent = namaNasabahById(daftarNasabah, entri.nasabah_id);
+      tr.appendChild(tdNasabah);
+
+      var tdJenis = document.createElement('td');
+      tdJenis.className = 'jenis-label';
+      tdJenis.textContent = entri.jenis_transaksi === 'khusus' ? 'Transaksi Khusus' : 'Transaksi';
+      tr.appendChild(tdJenis);
+
+      var tdRef = document.createElement('td');
+      tdRef.textContent = entri.referensi;
+      tr.appendChild(tdRef);
+
+      var tdDebet = document.createElement('td');
+      tdDebet.className = 'angka debet';
+      tdDebet.textContent = debet ? formatRupiah(debet) : '—';
+      tr.appendChild(tdDebet);
+
+      var tdKredit = document.createElement('td');
+      tdKredit.className = 'angka kredit';
+      tdKredit.textContent = kredit ? formatRupiah(kredit) : '—';
+      tr.appendChild(tdKredit);
+
+      var tdSaldo = document.createElement('td');
+      tdSaldo.className = 'angka saldo';
+      tdSaldo.textContent = formatRupiah(saldo);
+      tr.appendChild(tdSaldo);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('selectNasabahLihat').addEventListener('change', renderLihatBukuBesar);
+  document.getElementById('selectJenisLihat').addEventListener('change', renderLihatBukuBesar);
+
+  async function refreshSemuaTampilan(){
+    await renderNasabah();
+    await modulTransaksi.render();
+    await modulTransaksiKhusus.render();
+    await renderLihatBukuBesar();
+  }
+
+  /* ---------- Tanggal hari ini ---------- */
+  (function(){
+    var hariNama = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    var bulanNama = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    var now = new Date();
+    document.getElementById('tanggalHariIni').textContent =
+      hariNama[now.getDay()] + ', ' + now.getDate() + ' ' + bulanNama[now.getMonth()] + ' ' + now.getFullYear();
+  })();
+
+  refreshSemuaTampilan();
+  tampilkanHalaman();
+})();
+</script>
+</body>
+</html>
